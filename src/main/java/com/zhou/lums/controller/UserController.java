@@ -1,9 +1,14 @@
 package com.zhou.lums.controller;
 
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,6 +62,22 @@ public class UserController {
         UserSummary userSummary = new UserSummary(user.getId(), user.getUsername(), user.getName());
 
         return userSummary;
+    }
+
+    @GetMapping("/users")
+    public List<UserSummary> getUsers() {
+        List<UserSummary> userList= userRepository.findAll()
+                .stream()
+                .map(user -> new UserSummary(user.getId(), user.getUsername(), user.getName()))
+                .collect(Collectors.toList());
+        return userList;
+    }
+
+    @GetMapping("/users/count")
+    public ResponseEntity<?> getUserCount() {
+        Map<String, Long> responseObj = new HashMap<>();
+        responseObj.put("count", userRepository.countById());
+        return ResponseEntity.ok(responseObj);
     }
 
 }
