@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zhou.lums.exception.ResourceNotFoundException;
 import com.zhou.lums.model.User;
 import com.zhou.lums.respository.UserRepository;
-import com.zhou.lums.service.UserPrincipal;
-
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -40,13 +42,14 @@ public class User implements Serializable {
 
     @NotNull private String password;
 
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     public enum Role {
-        SUPERUSER,
-        ADMIN,
-        CUSTOMER,
-        EXPERT
+        ROLE_SUPERUSER,
+        ROLE_ADMIN,
+        ROLE_USER,
+        ROLE_EXPERT
     }
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
@@ -63,6 +66,22 @@ public class User implements Serializable {
     @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     private Set<Log> adminLogs = new HashSet<Log>();
+
+
+    public User() {
+
+    }
+
+    public User(
+            String name,
+            String username,
+            String email,
+            String password) {
+        this.name = name;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+    }
 
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
