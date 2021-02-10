@@ -55,4 +55,9 @@ public class SaleController {
         LocalDate expireDate = LocalDate.of(year, month, day);
         return saleService.changeSaleExpiration(saleId, expireDate);
     }
+
+    @PutMapping("sale/expiration")
+    public ResponseEntity<?> checkSaleExpiration() {
+        return saleService.checkSaleExpiration();
+    }
 }
