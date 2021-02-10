@@ -99,19 +99,19 @@ public class UserController {
 
     @PostMapping("/users/block/{memberId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> blockUser(@CurrentUser UserPrincipal currentUser, @PathVariable(value = "memberId") String memberId) {
+    public ResponseEntity<?> blockUser(@CurrentUser UserPrincipal currentUser, @PathVariable(value = "memberId") long memberId) {
         return userService.blockUser(currentUser, memberId);
     }
 
     @PostMapping("/users/unblock/{memberId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> unblockUser(@CurrentUser UserPrincipal currentUser, @PathVariable(value = "memberId") String memberId) {
+    public ResponseEntity<?> unblockUser(@CurrentUser UserPrincipal currentUser, @PathVariable(value = "memberId") long memberId) {
         return userService.unblockUser(currentUser, memberId);
     }
 
     @PostMapping("/users/email/{memberId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> updateUserEmail(@PathVariable(value = "memberId") String memberId, @RequestParam(value = "new_email") String newEmail) {
+    public ResponseEntity<?> updateUserEmail(@PathVariable(value = "memberId") long memberId, @RequestParam(value = "new_email") String newEmail) {
         return userService.updateUserEmail(newEmail, memberId);
     }
 }
