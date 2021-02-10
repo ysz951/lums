@@ -51,24 +51,24 @@ public class UserService {
 
     }
 
-    public ResponseEntity<?> blockUser(UserPrincipal currentUser, String memberId) {
-        User user = userRepository.findById(Long.valueOf(memberId))
+    public ResponseEntity<?> blockUser(UserPrincipal currentUser, long memberId) {
+        User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
         user.setBlocked(true);
         userRepository.save(user);
         return ResponseEntity.ok(new ApiResponse(true, "blocked user"));
     }
 
-    public ResponseEntity<?> unblockUser(UserPrincipal currentUser, String memberId) {
-        User user = userRepository.findById(Long.valueOf(memberId))
+    public ResponseEntity<?> unblockUser(UserPrincipal currentUser, long memberId) {
+        User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
         user.setBlocked(false);
         userRepository.save(user);
         return ResponseEntity.ok(new ApiResponse(true, "unblocked user"));
     }
 
-    public ResponseEntity<?> updateUserEmail(String newEmail, String memberId) {
-        User user = userRepository.findById(Long.valueOf(memberId))
+    public ResponseEntity<?> updateUserEmail(String newEmail, long memberId) {
+        User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
         user.setEmail(newEmail);
         userRepository.save(user);
