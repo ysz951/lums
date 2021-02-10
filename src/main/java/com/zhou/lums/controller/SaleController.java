@@ -1,5 +1,6 @@
 package com.zhou.lums.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +44,15 @@ public class SaleController {
             @PathVariable("saleId") long saleId,
             @RequestParam("new_active") boolean newActive) {
         return saleService.changeSaleActive(saleId, newActive);
+    }
+
+    @PutMapping("sale/{saleId}/expirationdate")
+    public ResponseEntity<?> changeSaleExpiration(
+            @PathVariable("saleId") long saleId,
+            @RequestParam("year") int year,
+            @RequestParam("month") int month,
+            @RequestParam("day") int day) {
+        LocalDate expireDate = LocalDate.of(year, month, day);
+        return saleService.changeSaleExpiration(saleId, expireDate);
     }
 }

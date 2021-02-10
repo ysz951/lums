@@ -1,5 +1,6 @@
 package com.zhou.lums.service;
 
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,15 @@ public class SaleService {
         saleRepository.save(sale);
 
         return ResponseEntity.ok(new ApiResponse(true, "Change sale active"));
+    }
+
+    public ResponseEntity<?> changeSaleExpiration(long saleId, LocalDate expireDate) {
+        Sale sale = saleRepository
+                .findById(saleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Sale", "id", saleId));
+        sale.setExpireDate(expireDate);
+        saleRepository.save(sale);
+        return ResponseEntity.ok(new ApiResponse(true, "Change sale exipration"));
     }
 
 }
