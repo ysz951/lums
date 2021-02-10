@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +13,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.zhou.lums.exception.ResourceNotFoundException;
 import com.zhou.lums.model.User;
+import com.zhou.lums.payload.PasswordRequest;
 import com.zhou.lums.payload.UserIdentityAvailability;
 import com.zhou.lums.payload.UserSummary;
 import com.zhou.lums.respository.UserRepository;
 import com.zhou.lums.security.CurrentUser;
 import com.zhou.lums.security.UserPrincipal;
+import com.zhou.lums.service.UserService;
 
 
 
@@ -29,9 +34,15 @@ import com.zhou.lums.security.UserPrincipal;
 @RequestMapping("/api")
 public class UserController {
 
-    @Autowired
     private UserRepository userRepository;
 
+    private UserService userService;
+
+    @Autowired
+    public UserController(UserRepository userRepository, UserService userService) {
+        this.userRepository = userRepository;
+        this.userService = userService;
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -68,7 +79,7 @@ public class UserController {
     public List<UserSummary> getUsers() {
         List<UserSummary> userList= userRepository.findAll()
                 .stream()
-                .map(user -> new UserSummary(user.getId(), user.getUsername(), user.getName()))
+                .map(user -> new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole()))
                 .collect(Collectors.toList());
         return userList;
     }
@@ -80,4 +91,27 @@ public class UserController {
         return ResponseEntity.ok(responseObj);
     }
 
+    @PostMapping("/users/password")
+    public ResponseEntity<?> changePassword(@CurrentUser UserPrincipal currentUser,
+            @Valid @RequestBody PasswordRequest passwordRequest) {
+        return userService.changePassword(currentUser, passwordRequest);
+    }
+
+    @PostMapping("/users/block/{memberId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> blockUser(@CurrentUser UserPrincipal currentUser, @PathVariable(value = "memberId") String memberId) {
+        return userService.blockUser(currentUser, memberId);
+    }
+
+    @PostMapping("/users/unblock/{memberId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> unblockUser(@CurrentUser UserPrincipal currentUser, @PathVariable(value = "memberId") String memberId) {
+        return userService.unblockUser(currentUser, memberId);
+    }
+
+    @PostMapping("/users/email/{memberId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateUserEmail(@PathVariable(value = "memberId") String memberId, @RequestParam(value = "new_email") String newEmail) {
+        return userService.updateUserEmail(newEmail, memberId);
+    }
 }

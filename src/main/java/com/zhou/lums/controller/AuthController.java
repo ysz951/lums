@@ -20,22 +20,24 @@ import com.zhou.lums.model.User;
 import com.zhou.lums.payload.ApiResponse;
 import com.zhou.lums.payload.JwtAuthenticationResponse;
 import com.zhou.lums.payload.LoginRequest;
+import com.zhou.lums.respository.UserRepository;
+import com.zhou.lums.security.JwtTokenProvider;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
-    com.zhou.lums.respository.UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    com.zhou.lums.security.JwtTokenProvider tokenProvider;
+    private JwtTokenProvider tokenProvider;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -70,6 +72,7 @@ public class AuthController {
 //                signUpRequest.getEmail(), signUpRequest.getPassword());
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setBlocked(false);
 //        user.setRoles(Collections.singleton(userRole, o));
         System.out.println(user.getRole());
         // user.setRole(Role.ROLE_USER);

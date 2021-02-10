@@ -29,7 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByEmail(String email);
 
     List<User> findAllByRole(Role role);
+
     @Query("SELECT COUNT(u) FROM User u")
     Long countById();
-//    Long countById();
 }
