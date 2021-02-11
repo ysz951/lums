@@ -20,7 +20,7 @@ public class UserPrincipal implements UserDetails {
 
     private String username;
 
-    @JsonIgnore
+    // @JsonIgnore
     private String email;
 
     @JsonIgnore
@@ -67,6 +67,7 @@ public class UserPrincipal implements UserDetails {
     public String getName() {
         return name;
     }
+
 
     public String getEmail() {
         return email;
