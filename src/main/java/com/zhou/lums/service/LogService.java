@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.zhou.lums.model.Log;
 import com.zhou.lums.model.User;
+import com.zhou.lums.model.User.Role;
 import com.zhou.lums.respository.LogRepository;
 
 @Service
@@ -23,6 +24,15 @@ public class LogService {
         } else {
             log.setLog("Unblocked");
         }
+        logRepository.save(log);
+    }
+
+    public void logModifyRole(User admin, User user, Role prevRole, Role newRole) {
+        Log log = new Log();
+        log.setUser(user);
+        log.setAdmin(admin);
+        log.setPrevRole(prevRole);
+        log.setNewRole(newRole);
         logRepository.save(log);
     }
 }

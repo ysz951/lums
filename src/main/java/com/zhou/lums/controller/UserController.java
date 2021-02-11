@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.zhou.lums.exception.ResourceNotFoundException;
 import com.zhou.lums.model.User;
+import com.zhou.lums.model.User.Role;
 import com.zhou.lums.payload.PasswordRequest;
 import com.zhou.lums.payload.UserIdentityAvailability;
 import com.zhou.lums.payload.UserSummary;
@@ -114,4 +115,15 @@ public class UserController {
     public ResponseEntity<?> updateUserEmail(@PathVariable(value = "memberId") long memberId, @RequestParam(value = "new_email") String newEmail) {
         return userService.updateUserEmail(newEmail, memberId);
     }
+
+    @PostMapping("/users/{memberId}/modify_role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> changeUserRole(
+            @CurrentUser UserPrincipal currentUser,
+            @PathVariable("memberId") long memberId,
+            @RequestParam("newRole") Role newRole) {
+
+        return userService.changeUserRole(currentUser, memberId, newRole);
+    }
+
 }

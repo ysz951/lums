@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.zhou.lums.exception.ResourceNotFoundException;
 import com.zhou.lums.model.User;
+import com.zhou.lums.model.User.Role;
 import com.zhou.lums.payload.ApiResponse;
 import com.zhou.lums.payload.PasswordRequest;
 import com.zhou.lums.respository.UserRepository;
@@ -22,6 +23,9 @@ import com.zhou.lums.security.UserPrincipal;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private LogService logService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -53,6 +57,7 @@ public class UserService {
 
     public ResponseEntity<?> blockUser(long memberId) {
         if (userRepository.updateUserBlock(true, memberId) == 0) throw new ResourceNotFoundException("User", "id", memberId);
+//        logService.logBlockUser(admin, user, isBlocked);
         return ResponseEntity.ok(new ApiResponse(true, "blocked user"));
     }
 
@@ -67,5 +72,16 @@ public class UserService {
         user.setEmail(newEmail);
         userRepository.save(user);
         return ResponseEntity.ok(new ApiResponse(true, "update email"));
+    }
+
+    public ResponseEntity<?> changeUserRole(UserPrincipal currentUser, long memberId, Role newRole) {
+        User user = userRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+        User admin = userRepository.findById(currentUser.getId()).get();
+        Role prevRole = user.getRole();
+        user.setRole(newRole);
+        userRepository.save(user);
+        logService.logModifyRole(admin, user, prevRole, newRole);
+        return ResponseEntity.ok(new ApiResponse(true, "change user role"));
     }
 }
