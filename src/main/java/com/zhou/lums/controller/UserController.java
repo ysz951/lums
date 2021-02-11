@@ -47,6 +47,18 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+    @GetMapping("/user/{userId}")
+    // @PreAuthorize("hasRole('USER')")
+    public UserSummary getUserById(@PathVariable(value = "userId") long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+
+        System.out.println(user.getRole());
+        UserSummary userSummary = new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole(), user.getEmail());
+
+        return userSummary;
+    }
+
     @GetMapping("/user/me")
     // @PreAuthorize("hasRole('USER')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {

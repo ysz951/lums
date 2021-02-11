@@ -27,6 +27,7 @@ public class UserSummary {
         this.id = id;
         this.username = username;
         this.name = name;
+        this.role = role;
         this.email = email;
     }
 
