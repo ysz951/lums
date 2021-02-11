@@ -17,9 +17,9 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
 
     @Modifying
     @Query("Update Sale SET active = :arg1 WHERE id = :arg2")
-    public int updateSaleActive(@Param("arg1")boolean active, @Param("arg2")long id);
+    int updateSaleActive(@Param("arg1")boolean active, @Param("arg2")long id);
 
     @Modifying
     @Query("Update Sale SET expire_date = :arg1 WHERE id = :arg2")
-    public int updateSaleExpire(@Param("arg1")LocalDate expireDate, @Param("arg2")long id);
+    int updateSaleExpire(@Param("arg1")LocalDate expireDate, @Param("arg2")long id);
 }

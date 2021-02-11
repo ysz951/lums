@@ -52,12 +52,12 @@ public class UserService {
     }
 
     public ResponseEntity<?> blockUser(long memberId) {
-        userRepository.updateUserBlock(true, memberId);
+        if (userRepository.updateUserBlock(true, memberId) == 0) throw new ResourceNotFoundException("User", "id", memberId);
         return ResponseEntity.ok(new ApiResponse(true, "blocked user"));
     }
 
     public ResponseEntity<?> unblockUser(long memberId) {
-        userRepository.updateUserBlock(false, memberId);
+        if (userRepository.updateUserBlock(false, memberId) == 0) throw new ResourceNotFoundException("User", "id", memberId);
         return ResponseEntity.ok(new ApiResponse(true, "unblocked user"));
     }
 
