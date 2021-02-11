@@ -48,9 +48,9 @@ public class LicenseService {
         sale.setActive(true);
         sale.setPurchasedDate(LocalDate.now());
         sale.setUser(user);
-        user.getSales().add(sale);
+//        user.getSales().add(sale);
         sale.setLicense(license);
-        license.getSales().add(sale);
+//        license.getSales().add(sale);
         saleRepository.save(sale);
         logService.logPurchase(user, license);
         return ResponseEntity.ok(new ApiResponse(true, "Purchase License"));
