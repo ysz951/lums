@@ -73,7 +73,7 @@ public class AuthController {
 //        User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
 //                signUpRequest.getEmail(), signUpRequest.getPassword());
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setBlocked(false);
 //        user.setRoles(Collections.singleton(userRole, o));
         System.out.println(user.getRole());
