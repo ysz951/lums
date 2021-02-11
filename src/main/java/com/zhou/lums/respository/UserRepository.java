@@ -38,4 +38,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("Update User SET blocked = :arg1 WHERE id = :arg2")
     public int updateUserBlock(@Param("arg1")boolean blocked, @Param("arg2")long id);
+
 }
