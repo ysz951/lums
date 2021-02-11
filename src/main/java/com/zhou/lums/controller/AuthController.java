@@ -20,6 +20,7 @@ import com.zhou.lums.model.User;
 import com.zhou.lums.payload.ApiResponse;
 import com.zhou.lums.payload.JwtAuthenticationResponse;
 import com.zhou.lums.payload.LoginRequest;
+import com.zhou.lums.payload.SignUpRequest;
 import com.zhou.lums.respository.UserRepository;
 import com.zhou.lums.security.JwtTokenProvider;
 
@@ -56,26 +57,27 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody User user) {
-        if(userRepository.existsByUsername(user.getUsername())) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+        if(userRepository.existsByUsername(signUpRequest.getUsername())) {
             return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
                     HttpStatus.BAD_REQUEST);
         }
 
-        if(userRepository.existsByEmail(user.getEmail())) {
+        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
             return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
                     HttpStatus.BAD_REQUEST);
         }
-
+        User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
+                signUpRequest.getEmail(), signUpRequest.getRole());
         // Creating user's account
 //        User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
 //                signUpRequest.getEmail(), signUpRequest.getPassword());
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setBlocked(false);
 //        user.setRoles(Collections.singleton(userRole, o));
         System.out.println(user.getRole());
-        // user.setRole(Role.ROLE_USER);
+
         User result = userRepository.save(user);
 
         URI location = ServletUriComponentsBuilder

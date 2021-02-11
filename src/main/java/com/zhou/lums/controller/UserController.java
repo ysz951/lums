@@ -47,6 +47,18 @@ public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+    @GetMapping("/user/{userId}")
+    // @PreAuthorize("hasRole('USER')")
+    public UserSummary getUserById(@PathVariable(value = "userId") long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+
+        System.out.println(user.getRole());
+        UserSummary userSummary = new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole(), user.getEmail());
+
+        return userSummary;
+    }
+
     @GetMapping("/user/me")
     // @PreAuthorize("hasRole('USER')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
@@ -71,7 +83,7 @@ public class UserController {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
-        UserSummary userSummary = new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole());
+        UserSummary userSummary = new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole(), user.getEmail());
 
         return userSummary;
     }
@@ -80,7 +92,7 @@ public class UserController {
     public List<UserSummary> getUsers() {
         List<UserSummary> userList= userRepository.findAll()
                 .stream()
-                .map(user -> new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole()))
+                .map(user -> new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole(), user.getEmail()))
                 .collect(Collectors.toList());
         return userList;
     }
