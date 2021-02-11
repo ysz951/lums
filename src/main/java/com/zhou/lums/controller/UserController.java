@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.zhou.lums.exception.ResourceNotFoundException;
 import com.zhou.lums.model.User;
+import com.zhou.lums.model.User.Role;
 import com.zhou.lums.payload.PasswordRequest;
 import com.zhou.lums.payload.UserIdentityAvailability;
 import com.zhou.lums.payload.UserSummary;
@@ -47,9 +48,9 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/user/me")
-    @PreAuthorize("hasRole('USER')")
+    // @PreAuthorize("hasRole('USER')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-        UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName());
+        UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName(), currentUser.isBlocked(), currentUser.getRole());
         return userSummary;
     }
 
@@ -70,7 +71,7 @@ public class UserController {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
-        UserSummary userSummary = new UserSummary(user.getId(), user.getUsername(), user.getName());
+        UserSummary userSummary = new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole());
 
         return userSummary;
     }
@@ -99,14 +100,18 @@ public class UserController {
 
     @PostMapping("/users/block/{memberId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> blockUser(@PathVariable(value = "memberId") long memberId) {
-        return userService.blockUser(memberId);
+    public ResponseEntity<?> blockUser(
+            @CurrentUser UserPrincipal currentUser,
+            @PathVariable(value = "memberId") long memberId) {
+        return userService.blockUser(currentUser, memberId);
     }
 
     @PostMapping("/users/unblock/{memberId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> unblockUser(@PathVariable(value = "memberId") long memberId) {
-        return userService.unblockUser(memberId);
+    public ResponseEntity<?> unblockUser(
+            @CurrentUser UserPrincipal currentUser,
+            @PathVariable(value = "memberId") long memberId) {
+        return userService.unblockUser(currentUser, memberId);
     }
 
     @PostMapping("/users/email/{memberId}")
@@ -114,4 +119,15 @@ public class UserController {
     public ResponseEntity<?> updateUserEmail(@PathVariable(value = "memberId") long memberId, @RequestParam(value = "new_email") String newEmail) {
         return userService.updateUserEmail(newEmail, memberId);
     }
+
+    @PostMapping("/users/{memberId}/modify_role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> changeUserRole(
+            @CurrentUser UserPrincipal currentUser,
+            @PathVariable("memberId") long memberId,
+            @RequestParam("newRole") Role newRole) {
+
+        return userService.changeUserRole(currentUser, memberId, newRole);
+    }
+
 }

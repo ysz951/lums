@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zhou.lums.model.User;
+import com.zhou.lums.model.User.Role;
 
 
 public class UserPrincipal implements UserDetails {
@@ -25,15 +26,21 @@ public class UserPrincipal implements UserDetails {
     @JsonIgnore
     private String password;
 
+    private boolean blocked;
+
+    private Role role;
+
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(Long id, String name, String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(Long id, String name, String username, String email, String password, boolean blocked, Role role, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.name = name;
         this.username = username;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
+        this.blocked = blocked;
+        this.role = role;
     }
 
     public static UserPrincipal create(User user) {
@@ -47,6 +54,8 @@ public class UserPrincipal implements UserDetails {
                 user.getName(),
                 user.getEmail(),
                 user.getPassword(),
+                user.isBlocked(),
+                user.getRole(),
                 authorities
         );
     }
@@ -61,6 +70,14 @@ public class UserPrincipal implements UserDetails {
 
     public String getEmail() {
         return email;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     @Override

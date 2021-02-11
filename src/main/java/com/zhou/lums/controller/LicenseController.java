@@ -16,6 +16,8 @@ import com.zhou.lums.exception.ResourceNotFoundException;
 import com.zhou.lums.model.License;
 import com.zhou.lums.model.License.Duration;
 import com.zhou.lums.respository.LicenseRepository;
+import com.zhou.lums.security.CurrentUser;
+import com.zhou.lums.security.UserPrincipal;
 import com.zhou.lums.service.LicenseService;
 
 @RestController
@@ -44,6 +46,10 @@ public class LicenseController {
                 .orElseThrow(() -> new ResourceNotFoundException("License", "id", licenseId));
     }
 
+    @PostMapping("/{licenseId}/purchase")
+    public ResponseEntity<?> purChaseLicense(@CurrentUser UserPrincipal currentUser, @PathVariable("licenseId") long licenseId) {
+        return licenseService.purChaseLicense(currentUser, licenseId);
+    }
 
     @GetMapping("/duration")
     public List<License> listAllLicenseByDuration(@RequestParam(value = "duration") Duration duration) {
