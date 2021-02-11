@@ -51,19 +51,21 @@ public class UserService {
 
     }
 
-    public ResponseEntity<?> blockUser(UserPrincipal currentUser, long memberId) {
-        User user = userRepository.findById(memberId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
-        user.setBlocked(true);
-        userRepository.save(user);
+    public ResponseEntity<?> blockUser(long memberId) {
+//        User user = userRepository.findById(memberId)
+//                .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+//        user.setBlocked(true);
+//        userRepository.save(user);
+        userRepository.updateUserBlock(true, memberId);
         return ResponseEntity.ok(new ApiResponse(true, "blocked user"));
     }
 
-    public ResponseEntity<?> unblockUser(UserPrincipal currentUser, long memberId) {
-        User user = userRepository.findById(memberId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
-        user.setBlocked(false);
-        userRepository.save(user);
+    public ResponseEntity<?> unblockUser(long memberId) {
+        userRepository.updateUserBlock(false, memberId);
+//        User user = userRepository.findById(memberId)
+//                .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+//        user.setBlocked(false);
+//        userRepository.save(user);
         return ResponseEntity.ok(new ApiResponse(true, "unblocked user"));
     }
 
