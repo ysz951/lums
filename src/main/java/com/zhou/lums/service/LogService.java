@@ -3,6 +3,7 @@ package com.zhou.lums.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.zhou.lums.model.License;
 import com.zhou.lums.model.Log;
 import com.zhou.lums.model.User;
 import com.zhou.lums.model.User.Role;
@@ -33,6 +34,13 @@ public class LogService {
         log.setAdmin(admin);
         log.setPrevRole(prevRole);
         log.setNewRole(newRole);
+        logRepository.save(log);
+    }
+
+    public void logPurchase(User user, License license){
+        Log log = new Log();
+        log.setUser(user);
+        log.setLicense(license);
         logRepository.save(log);
     }
 }

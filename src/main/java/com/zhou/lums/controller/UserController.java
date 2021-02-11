@@ -100,14 +100,18 @@ public class UserController {
 
     @PostMapping("/users/block/{memberId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> blockUser(@PathVariable(value = "memberId") long memberId) {
-        return userService.blockUser(memberId);
+    public ResponseEntity<?> blockUser(
+            @CurrentUser UserPrincipal currentUser,
+            @PathVariable(value = "memberId") long memberId) {
+        return userService.blockUser(currentUser, memberId);
     }
 
     @PostMapping("/users/unblock/{memberId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> unblockUser(@PathVariable(value = "memberId") long memberId) {
-        return userService.unblockUser(memberId);
+    public ResponseEntity<?> unblockUser(
+            @CurrentUser UserPrincipal currentUser,
+            @PathVariable(value = "memberId") long memberId) {
+        return userService.unblockUser(currentUser, memberId);
     }
 
     @PostMapping("/users/email/{memberId}")
