@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.zhou.lums.exception.ResourceNotFoundException;
 import com.zhou.lums.payload.ApiResponse;
 import com.zhou.lums.respository.LicenseRepository;
 
@@ -18,7 +19,7 @@ public class LicenseService {
 //                .orElseThrow(() -> new ResourceNotFoundException("License", "id", licenseId));
 //        license.setActive(newActive);
 //        licenseRepository.save(license);
-        licenseRepository.updateLicenseActive(newActive, licenseId);
+        if (licenseRepository.updateLicenseActive(newActive, licenseId) == 0) throw new ResourceNotFoundException("License", "id", licenseId);
         return ResponseEntity.ok(new ApiResponse(true, "Change License Active"));
     }
 
