@@ -28,7 +28,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @NotNull
@@ -79,11 +79,11 @@ public class User implements Serializable {
             String name,
             String username,
             String email,
-            String password) {
+            Role role) {
         this.name = name;
         this.email = email;
         this.username = username;
-        this.password = password;
+        this.role = role;
     }
 
     public void setBlocked(boolean blocked) {
