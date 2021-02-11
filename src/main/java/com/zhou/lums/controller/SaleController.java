@@ -39,10 +39,10 @@ public class SaleController {
         return sale;
     }
 
-    @PutMapping("/sale/{saleId}")
+    @PutMapping("/sale/active/{saleId}/{newActive}")
     public ResponseEntity<?> changeSaleActive(
             @PathVariable("saleId") long saleId,
-            @RequestParam("new_active") boolean newActive) {
+            @PathVariable("newActive") boolean newActive) {
         return saleService.changeSaleActive(saleId, newActive);
     }
 
