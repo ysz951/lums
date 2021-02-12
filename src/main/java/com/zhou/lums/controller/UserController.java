@@ -53,7 +53,7 @@ public class UserController {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-        System.out.println(user.getRole());
+        System.out.println(user.isBlocked());
         UserSummary userSummary = new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole(), user.getEmail());
 
         return userSummary;
