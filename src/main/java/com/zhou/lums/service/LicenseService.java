@@ -40,6 +40,14 @@ public class LicenseService {
         return ResponseEntity.ok(new ApiResponse(true, "Change License Active"));
     }
 
+    public ResponseEntity<?> setLicensePrice(long licenseId, double price) {
+      License license = licenseRepository.findById(licenseId)
+              .orElseThrow(() -> new ResourceNotFoundException("License", "id", licenseId));
+      license.setPrice(price);
+      licenseRepository.save(license);
+      return ResponseEntity.ok(new ApiResponse(true, "Set License Price"));
+  }
+
     public ResponseEntity<?> purChaseLicense(UserPrincipal currentUser, long licenseId) {
         User user = userRepository.findById(currentUser.getId()).get();
         License license = licenseRepository.findById(licenseId)

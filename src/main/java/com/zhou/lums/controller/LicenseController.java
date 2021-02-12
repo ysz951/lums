@@ -61,4 +61,10 @@ public class LicenseController {
             @PathVariable(value="newActive") boolean newActive) {
         return licenseService.changeLicenseActive(licenseId, newActive);
     }
+
+    @PostMapping("/price/{licenseId}/{price}")
+    public ResponseEntity<?> changeLicensePrice (@PathVariable(value="licenseId") long licenseId,
+            @PathVariable(value="price") double price) {
+        return licenseService.setLicensePrice(licenseId, price);
+    }
 }
