@@ -38,7 +38,7 @@ public class Sale {
     private LocalDate expireDate;
 
     @ManyToOne
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "name")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     private User user;
 

@@ -7,13 +7,13 @@ import org.springframework.data.repository.query.Param;
 import com.zhou.lums.model.Log;
 
 public interface LogRepository extends JpaRepository<Log, Long> {
-    @Query("SELECT l from Log l ORDER BY l.time DESC")
+    @Query("SELECT l from Log l ORDER BY l.createdAt DESC")
     public List<Log> findAllOrderedByTimeDesc();
 
-    @Query("SELECT l from Log l WHERE l.user.id = :arg1 ORDER BY l.time DESC")
+    @Query("SELECT l from Log l WHERE l.user.id = :arg1 ORDER BY l.createdAt DESC")
     public List<Log> findAllLogByUserIdLasestOrder(@Param("arg1") long userId);
 
     @Query("SELECT l from Log l WHERE l.user.id = :arg1 AND l.license.id = :arg2"
-            + " ORDER BY l.time DESC")
+            + " ORDER BY l.createdAt DESC")
     public List<Log> findAllLogByUserIdAndLicenseId(@Param("arg1") long userId, @Param("arg2") long licenseId);
 }
