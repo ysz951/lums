@@ -1,7 +1,4 @@
 package com.zhou.lums.model;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,13 +9,14 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.zhou.lums.audit.DateAudit;
 import com.zhou.lums.model.User.Role;
 
 /** Model class for Log */
 
 @Entity
 @Table
-public class Log {
+public class Log extends DateAudit{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,15 +24,15 @@ public class Log {
 
     private String log;
 
-    private Date time;
+//    private Date time;
 
     @ManyToOne
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "name")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     private User user;
 
     @ManyToOne
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "name")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIdentityReference(alwaysAsId = true)
     private User admin;
 
@@ -63,13 +61,13 @@ public class Log {
         this.log = log;
     }
 
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
-    }
+//    public Date getTime() {
+//        return time;
+//    }
+//
+//    public void setTime(Date time) {
+//        this.time = time;
+//    }
 
     public User getUser() {
         return user;
@@ -111,12 +109,12 @@ public class Log {
         this.license = license;
     }
 
-    public void setTimeCurrent() {
-        this.time = getCurrentTime();
-    }
-
-    public static Date getCurrentTime() {
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("CDT"));
-        return calendar.getTime();
-    }
+//    public void setTimeCurrent() {
+//        this.time = getCurrentTime();
+//    }
+//
+//    public static Date getCurrentTime() {
+//        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("CDT"));
+//        return calendar.getTime();
+//    }
 }

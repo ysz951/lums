@@ -1,6 +1,5 @@
 package com.zhou.lums.model;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Entity;
@@ -24,8 +23,15 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /** Model class for Member */
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
-public class User implements Serializable {
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "username"
+        }),
+        @UniqueConstraint(columnNames = {
+                "email"
+        })
+})
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
