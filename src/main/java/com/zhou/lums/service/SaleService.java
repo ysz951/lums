@@ -29,13 +29,12 @@ public class SaleService {
     }
 
     public ResponseEntity<?> changeSaleExpiration(long saleId, LocalDate expireDate) {
-        Sale sale = saleRepository
-                .findById(saleId)
-                .orElseThrow(() -> new ResourceNotFoundException("Sale", "id", saleId));
-        sale.setExpireDate(expireDate);
-        saleRepository.save(sale);
-        //        if (saleRepository.updateSaleExpire(expireDate, saleId) == 0) throw new ResourceNotFoundException("Sale", "id", saleId);
-        System.out.println(saleRepository.findById(saleId).get().getExpireDate());
+        //        Sale sale = saleRepository
+        //                .findById(saleId)
+        //                .orElseThrow(() -> new ResourceNotFoundException("Sale", "id", saleId));
+        //        sale.setExpireDate(expireDate);
+        //        saleRepository.save(sale);
+        if (saleRepository.updateSaleExpire(expireDate, saleId) == 0) throw new ResourceNotFoundException("Sale", "id", saleId);
         return ResponseEntity.ok(new ApiResponse(true, "Change sale exipration"));
     }
 

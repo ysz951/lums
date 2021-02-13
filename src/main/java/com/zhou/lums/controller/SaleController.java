@@ -33,6 +33,11 @@ public class SaleController {
         return saleRepository.findAllOrderedByPurchasedDate();
     }
 
+    @GetMapping("/sale/user")
+    public List<Sale> getAllSaleByUserId(@RequestParam("userId") long userId) {
+        return saleRepository.findAllByUserId(userId);
+    }
+
     @GetMapping("/sale/{saleId}")
     public Sale getSaleById(@PathVariable("saleId") long saleId) {
         System.out.println(saleRepository.findById(saleId).get().getExpireDate());
