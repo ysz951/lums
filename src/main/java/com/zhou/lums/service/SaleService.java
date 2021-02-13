@@ -34,7 +34,7 @@ public class SaleService {
         //                .orElseThrow(() -> new ResourceNotFoundException("Sale", "id", saleId));
         //        sale.setExpireDate(expireDate);
         //        saleRepository.save(sale);
-        if (saleRepository.updateSaleExpire(expireDate, saleId) == 0) throw new ResourceNotFoundException("Sale", "id", saleId);;
+        if (saleRepository.updateSaleExpire(expireDate, saleId) == 0) throw new ResourceNotFoundException("Sale", "id", saleId);
         return ResponseEntity.ok(new ApiResponse(true, "Change sale exipration"));
     }
 

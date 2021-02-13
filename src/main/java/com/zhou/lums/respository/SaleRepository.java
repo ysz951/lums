@@ -15,6 +15,9 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Query("SELECT s from Sale s ORDER BY s.purchasedDate DESC")
     List<Sale> findAllOrderedByPurchasedDate();
 
+    @Query("SELECT s from Sale s WHERE s.user.id = :arg1")
+    List<Sale> findAllByUserId(@Param("arg1") long userId);
+
     @Modifying
     @Query("Update Sale SET active = :arg1 WHERE id = :arg2")
     int updateSaleActive(@Param("arg1")boolean active, @Param("arg2")long id);
