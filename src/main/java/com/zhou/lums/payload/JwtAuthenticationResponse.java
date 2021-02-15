@@ -1,11 +1,15 @@
 package com.zhou.lums.payload;
 
+import com.zhou.lums.model.User.Role;
+
 public class JwtAuthenticationResponse {
     private String accessToken;
     private String tokenType = "Bearer";
+    private Role role;
 
-    public JwtAuthenticationResponse(String accessToken) {
+    public JwtAuthenticationResponse(String accessToken, Role role) {
         this.accessToken = accessToken;
+        this.role = role;
     }
 
     public String getAccessToken() {
@@ -23,4 +27,14 @@ public class JwtAuthenticationResponse {
     public void setTokenType(String tokenType) {
         this.tokenType = tokenType;
     }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+
 }
