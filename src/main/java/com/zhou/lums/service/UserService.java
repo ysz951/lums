@@ -37,11 +37,12 @@ public class UserService {
     private JwtTokenProvider tokenProvider;
 
     public ResponseEntity<?> changePassword (
-            UserPrincipal currentUser,
+            long userId,
             PasswordRequest passwordRequest) {
         String oldPassword = passwordRequest.getOldPassword(),
                 newPassword = passwordRequest.getNewPassword();
-        User user = userRepository.findById(currentUser.getId()).get();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         Map<String, String> responseObj = new HashMap<>();
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             System.out.println("error");

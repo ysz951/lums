@@ -113,9 +113,9 @@ public class UserController {
     }
 
     @PostMapping("/users/password")
-    public ResponseEntity<?> changePassword(@CurrentUser UserPrincipal currentUser,
+    public ResponseEntity<?> changePassword(@RequestParam(value = "user_id") long userId,
             @Valid @RequestBody PasswordRequest passwordRequest) {
-        return userService.changePassword(currentUser, passwordRequest);
+        return userService.changePassword(userId, passwordRequest);
     }
 
     @PostMapping("/users/block/{memberId}")
