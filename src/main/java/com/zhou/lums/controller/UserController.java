@@ -87,6 +87,15 @@ public class UserController {
         return userSummary;
     }
 
+    @GetMapping("/users/role/{role}")
+    public List<UserSummary> getUserByRole(@PathVariable(value="role") Role role) {
+        return userRepository.findAllByRole(role)
+                .stream()
+                .map(user -> new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole(), user.getEmail()))
+                .collect(Collectors.toList());
+    }
+
+
     @GetMapping("/users")
     public List<UserSummary> getUsers() {
         List<UserSummary> userList= userRepository.findAll()
