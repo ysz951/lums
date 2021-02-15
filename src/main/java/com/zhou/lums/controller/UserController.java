@@ -53,7 +53,6 @@ public class UserController {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-        System.out.println(user.isBlocked());
         UserSummary userSummary = new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole(), user.getEmail());
 
         return userSummary;
@@ -111,7 +110,8 @@ public class UserController {
     }
 
     @PostMapping("/users/block/{memberId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<?> blockUser(
             @CurrentUser UserPrincipal currentUser,
             @PathVariable(value = "memberId") long memberId) {
@@ -119,7 +119,7 @@ public class UserController {
     }
 
     @PostMapping("/users/unblock/{memberId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<?> unblockUser(
             @CurrentUser UserPrincipal currentUser,
             @PathVariable(value = "memberId") long memberId) {
@@ -127,18 +127,18 @@ public class UserController {
     }
 
     @PostMapping("/users/email/{memberId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<?> updateUserEmail(@PathVariable(value = "memberId") long memberId, @RequestParam(value = "new_email") String newEmail) {
         return userService.updateUserEmail(newEmail, memberId);
     }
 
     @PostMapping("/users/{memberId}/modify_role")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SUPERUSER')")
     public ResponseEntity<?> changeUserRole(
             @CurrentUser UserPrincipal currentUser,
             @PathVariable("memberId") long memberId,
             @RequestParam("newRole") Role newRole) {
-
+//        System.out.println(currentUser.getRole().name());
         return userService.changeUserRole(currentUser, memberId, newRole);
     }
 
