@@ -53,7 +53,6 @@ public class UserController {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
-        System.out.println(user.isBlocked());
         UserSummary userSummary = new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole(), user.getEmail());
 
         return userSummary;
@@ -88,6 +87,15 @@ public class UserController {
         return userSummary;
     }
 
+    @GetMapping("/users/role/{role}")
+    public List<UserSummary> getUserByRole(@PathVariable(value="role") Role role) {
+        return userRepository.findAllByRole(role)
+                .stream()
+                .map(user -> new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole(), user.getEmail()))
+                .collect(Collectors.toList());
+    }
+
+
     @GetMapping("/users")
     public List<UserSummary> getUsers() {
         List<UserSummary> userList= userRepository.findAll()
@@ -105,13 +113,14 @@ public class UserController {
     }
 
     @PostMapping("/users/password")
-    public ResponseEntity<?> changePassword(@CurrentUser UserPrincipal currentUser,
+    public ResponseEntity<?> changePassword(@RequestParam(value = "user_id") long userId,
             @Valid @RequestBody PasswordRequest passwordRequest) {
-        return userService.changePassword(currentUser, passwordRequest);
+        return userService.changePassword(userId, passwordRequest);
     }
 
     @PostMapping("/users/block/{memberId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<?> blockUser(
             @CurrentUser UserPrincipal currentUser,
             @PathVariable(value = "memberId") long memberId) {
@@ -119,7 +128,7 @@ public class UserController {
     }
 
     @PostMapping("/users/unblock/{memberId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<?> unblockUser(
             @CurrentUser UserPrincipal currentUser,
             @PathVariable(value = "memberId") long memberId) {
@@ -127,18 +136,18 @@ public class UserController {
     }
 
     @PostMapping("/users/email/{memberId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<?> updateUserEmail(@PathVariable(value = "memberId") long memberId, @RequestParam(value = "new_email") String newEmail) {
         return userService.updateUserEmail(newEmail, memberId);
     }
 
     @PostMapping("/users/{memberId}/modify_role")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('SUPERUSER')")
     public ResponseEntity<?> changeUserRole(
             @CurrentUser UserPrincipal currentUser,
             @PathVariable("memberId") long memberId,
             @RequestParam("newRole") Role newRole) {
-
+//        System.out.println(currentUser.getRole().name());
         return userService.changeUserRole(currentUser, memberId, newRole);
     }
 
