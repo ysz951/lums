@@ -69,21 +69,26 @@ public class AuthController {
         }
         User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
                 signUpRequest.getEmail(), signUpRequest.getRole());
-        // Creating user's account
-//        User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
-//                signUpRequest.getEmail(), signUpRequest.getPassword());
-
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setBlocked(false);
-//        user.setRoles(Collections.singleton(userRole, o));
         System.out.println(user.getRole());
-
         User result = userRepository.save(user);
-
+//        Map<String, String> responseObj = new HashMap<>();
+//        try {
+//            User result = userRepository.save(user);
+//            URI location = ServletUriComponentsBuilder
+//                    .fromCurrentContextPath().path("/users/{username}")
+//                    .buildAndExpand(result.getUsername()).toUri();
+//            return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+//
+//        } catch(DataIntegrityViolationException ex) {
+//            responseObj.put("error", ex.getRootCause().getMessage());
+//            return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
+//        }
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")
                 .buildAndExpand(result.getUsername()).toUri();
-
         return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+
     }
 }

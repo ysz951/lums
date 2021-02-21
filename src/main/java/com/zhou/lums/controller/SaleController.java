@@ -1,5 +1,6 @@
 package com.zhou.lums.controller;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import javax.validation.Valid;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.zhou.lums.exception.ResourceNotFoundException;
 import com.zhou.lums.model.Sale;
+import com.zhou.lums.payload.ApiResponse;
 import com.zhou.lums.respository.SaleRepository;
 import com.zhou.lums.service.SaleService;
 
@@ -46,10 +49,16 @@ public class SaleController {
     }
 
     @PostMapping("/sale")
-    public Sale createNewSate(@Valid @RequestBody Sale sale) {
+    public ResponseEntity<?> createNewSate(@Valid @RequestBody Sale sale) {
         sale.setActive(true);
-        saleRepository.save(sale);
-        return sale;
+        Sale result = saleRepository.save(sale);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath().path("/api/sale/{saleId}")
+                .buildAndExpand(result.getId()).toUri();
+        System.out.println(location.toString());
+        return ResponseEntity.created(location).body(new ApiResponse(true, "Sale created successfully"));
+        // return ResponseEntity.created(location).build();
+        // return sale;
     }
 
     @PutMapping("/sale/active/{saleId}/{newActive}")

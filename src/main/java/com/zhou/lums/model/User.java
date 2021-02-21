@@ -49,7 +49,9 @@ public class User {
 
     private boolean blocked;
 
-    @NotNull private String password;
+    @NotNull
+    @Size(min = 6)
+    private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;

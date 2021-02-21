@@ -19,7 +19,9 @@ public class SignUpRequest {
     @NotNull
     private String username;
 
-    @NotNull private String password;
+    @NotNull
+    @Size(min = 6)
+    private String password;
 
     private Role role;
 
