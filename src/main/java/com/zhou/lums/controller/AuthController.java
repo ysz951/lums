@@ -4,6 +4,7 @@ package com.zhou.lums.controller;
 import java.net.URI;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -57,32 +58,37 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-//        if(userRepository.existsByUsername(signUpRequest.getUsername())) {
-//            return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
-//                    HttpStatus.BAD_REQUEST);
-//        }
-//
-//        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
-//            return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
-//                    HttpStatus.BAD_REQUEST);
-//        }
+        if(userRepository.existsByUsername(signUpRequest.getUsername())) {
+            return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
+            return new ResponseEntity(new ApiResponse(false, "Email Address already in use!"),
+                    HttpStatus.BAD_REQUEST);
+        }
         User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
                 signUpRequest.getEmail(), signUpRequest.getRole());
-        // Creating user's account
-//        User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
-//                signUpRequest.getEmail(), signUpRequest.getPassword());
-
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setBlocked(false);
-//        user.setRoles(Collections.singleton(userRole, o));
         System.out.println(user.getRole());
-
         User result = userRepository.save(user);
-
+//        Map<String, String> responseObj = new HashMap<>();
+//        try {
+//            User result = userRepository.save(user);
+//            URI location = ServletUriComponentsBuilder
+//                    .fromCurrentContextPath().path("/users/{username}")
+//                    .buildAndExpand(result.getUsername()).toUri();
+//            return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+//
+//        } catch(DataIntegrityViolationException ex) {
+//            responseObj.put("error", ex.getRootCause().getMessage());
+//            return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
+//        }
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")
                 .buildAndExpand(result.getUsername()).toUri();
-
         return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+
     }
 }
