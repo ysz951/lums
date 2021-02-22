@@ -50,6 +50,17 @@ public class JwtTokenProvider {
         return Long.parseLong(claims.getSubject());
     }
 
+    public String refreshToken(UserPrincipal currentUser) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+        return Jwts.builder()
+                .setSubject(Long.toString(currentUser.getId()))
+                .setIssuedAt(new Date())
+                .setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
+    }
+
     public boolean validateToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);

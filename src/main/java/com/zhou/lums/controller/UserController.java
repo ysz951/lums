@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,11 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zhou.lums.exception.ResourceNotFoundException;
 import com.zhou.lums.model.User;
 import com.zhou.lums.model.User.Role;
+import com.zhou.lums.payload.JwtAuthenticationResponse;
 import com.zhou.lums.payload.PasswordRequest;
 import com.zhou.lums.payload.UserIdentityAvailability;
 import com.zhou.lums.payload.UserSummary;
 import com.zhou.lums.respository.UserRepository;
 import com.zhou.lums.security.CurrentUser;
+import com.zhou.lums.security.JwtTokenProvider;
 import com.zhou.lums.security.UserPrincipal;
 import com.zhou.lums.service.UserService;
 
@@ -38,6 +41,12 @@ public class UserController {
     private UserRepository userRepository;
 
     private UserService userService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenProvider tokenProvider;
 
     @Autowired
     public UserController(UserRepository userRepository, UserService userService) {
@@ -56,6 +65,13 @@ public class UserController {
         UserSummary userSummary = new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole(), user.getEmail());
 
         return userSummary;
+    }
+
+    @PostMapping("/jwt/refresh")
+    public ResponseEntity<?> refresh(@CurrentUser UserPrincipal currentUser) {
+        String jwt = tokenProvider.refreshToken(currentUser);
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, currentUser.getRole()));
+
     }
 
     @GetMapping("/user/me")
