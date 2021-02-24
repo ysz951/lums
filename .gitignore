@@ -6,7 +6,7 @@ target/
 
 ### Spring ###
 application.properties
-
+application-test.properties
 ### STS ###
 .apt_generated
 .classpath
