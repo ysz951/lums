@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /** Model class for Member */
-@Entity
+@Entity(name="Users")
 @Table(uniqueConstraints = {
         @UniqueConstraint(columnNames = {
                 "username"

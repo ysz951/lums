@@ -32,15 +32,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllByRole(Role role);
 
-    @Query("SELECT COUNT(u) FROM User u")
+    @Query("SELECT COUNT(u) FROM Users u")
     Long countById();
 
     @Modifying
-    @Query("Update User SET blocked = :arg1 WHERE id = :arg2")
+    @Query("Update Users SET blocked = :arg1 WHERE id = :arg2")
     int updateUserBlock(@Param("arg1")boolean blocked, @Param("arg2")long id);
 
     @Modifying
-    @Query("Update User SET role = :arg1 WHERE id = :arg2")
+    @Query("Update Users SET role = :arg1 WHERE id = :arg2")
     int updateUserRole(@Param("arg1")Role role, @Param("arg2")long id);
 
 }
