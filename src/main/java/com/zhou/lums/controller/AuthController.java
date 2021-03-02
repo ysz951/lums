@@ -42,10 +42,10 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
+        loginRequest.setUsernameOrEmail(loginRequest.getUsernameOrEmail().toLowerCase());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsernameOrEmail(),
+                        loginRequest.getUsernameOrEmail().toLowerCase(),
                         loginRequest.getPassword()
                 )
         );
@@ -53,7 +53,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, userRepository.findByEmail(loginRequest.getUsernameOrEmail()).get().getRole()));
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, userRepository.findByEmail(loginRequest.getUsernameOrEmail().toLowerCase()).get().getRole()));
     }
 
     @PostMapping("/signup")
@@ -68,7 +68,7 @@ public class AuthController {
                     HttpStatus.BAD_REQUEST);
         }
         User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
-                signUpRequest.getEmail(), signUpRequest.getRole());
+                signUpRequest.getEmail().toLowerCase(), signUpRequest.getRole());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setBlocked(false);
         System.out.println(user.getRole());
