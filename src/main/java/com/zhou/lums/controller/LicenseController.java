@@ -37,7 +37,7 @@ public class LicenseController {
 
     @GetMapping
     public List<License> listAllLicense() {
-        return licenseRepository.findAll();
+        return licenseRepository.findAllOrderedById();
     }
 
     @GetMapping("/{licenseId}")

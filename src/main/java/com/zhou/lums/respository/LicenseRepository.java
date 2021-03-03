@@ -16,8 +16,9 @@ public interface LicenseRepository extends JpaRepository<License, Long>{
 
     @Query("SELECT l from License l WHERE l.duration = :arg1")
     List<License> findAllOrderedByIdFilterByType(@Param("arg1") Duration duration);
-//
-    List<License> findAllOrderedById(long id);
+
+    @Query("SELECT l FROM License l ORDER BY l.id")
+    List<License> findAllOrderedById();
 
     @Modifying
     @Query("Update License SET active = :arg1 WHERE id = :arg2")

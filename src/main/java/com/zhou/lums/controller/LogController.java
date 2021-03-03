@@ -17,6 +17,7 @@ public class LogController {
 
     @GetMapping
     public List<Log> listAlllogs() {
+//        return logRepository.findAllOrderedById();
         return logRepository.findAllOrderedByTimeDesc();
     }
 
@@ -25,7 +26,7 @@ public class LogController {
         return logRepository.findAllLogByUserIdLasestOrder(userId);
     }
 
-    @GetMapping("//by_user_and_license")
+    @GetMapping("/by_user_and_license")
     public List<Log> listAllLogsByUserAndLicense(
             @RequestParam("user_id") long userId,
             @RequestParam("license_id") long licenseId) {

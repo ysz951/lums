@@ -33,7 +33,8 @@ public class SaleController {
 
     @GetMapping("/sale")
     public List<Sale> getAllSale() {
-        return saleRepository.findAllOrderedByPurchasedDate();
+        return saleRepository.findAllOrderedById();
+//        return saleRepository.findAllOrderedByPurchasedDate();
     }
 
     @GetMapping("/sale/user")

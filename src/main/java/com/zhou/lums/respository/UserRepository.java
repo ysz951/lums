@@ -28,6 +28,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findAllOrderedByName(String name);
 
+    @Query("SELECT u FROM Users u ORDER BY u.id")
+    List<User> findAllOrderedById();
+
     List<User> findAllByEmail(String email);
 
     List<User> findAllByRole(Role role);

@@ -114,7 +114,7 @@ public class UserController {
 
     @GetMapping("/users")
     public List<UserSummary> getUsers() {
-        List<UserSummary> userList= userRepository.findAll()
+        List<UserSummary> userList= userRepository.findAllOrderedById()
                 .stream()
                 .map(user -> new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole(), user.getEmail()))
                 .collect(Collectors.toList());

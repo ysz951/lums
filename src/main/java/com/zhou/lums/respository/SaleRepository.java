@@ -25,4 +25,7 @@ public interface SaleRepository extends JpaRepository<Sale, Long> {
     @Modifying
     @Query("Update Sale SET expire_date = :arg1 WHERE id = :arg2")
     int updateSaleExpire(@Param("arg1")LocalDate expireDate, @Param("arg2")long id);
+
+    @Query("SELECT s FROM Sale s ORDER BY s.id")
+    List<Sale> findAllOrderedById();
 }
