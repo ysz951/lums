@@ -106,6 +106,9 @@ public class UserService {
     public ResponseEntity<?> changeUserRole(UserPrincipal currentUser, long memberId, Role newRole) {
         User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+        if (user.getRole().equals(Role.ROLE_SUPERUSER)) {
+            return new ResponseEntity<>(new ApiResponse(false, "No authorization"), HttpStatus.BAD_REQUEST);
+        }
         User admin = userRepository.findById(currentUser.getId()).get();
         Role prevRole = user.getRole();
         user.setRole(newRole);
