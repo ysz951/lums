@@ -98,6 +98,9 @@ public class UserService {
     public ResponseEntity<?> updateUserEmail(String newEmail, long memberId, UserPrincipal currentUser) {
         User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+        if (user.getRole().equals(Role.ROLE_SUPERUSER)) {
+            return new ResponseEntity<>(new ApiResponse(false, "No authorization"), HttpStatus.BAD_REQUEST);
+        }
         User currentU = userRepository.findById(currentUser.getId()).get();
         if (currentU.getRole().equals(Role.ROLE_ADMIN) && currentU.getId() != memberId) {
             return new ResponseEntity<>(new ApiResponse(false, "No authorization"), HttpStatus.BAD_REQUEST);
