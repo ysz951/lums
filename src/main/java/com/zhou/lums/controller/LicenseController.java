@@ -4,6 +4,7 @@ import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,7 @@ public class LicenseController {
     private LicenseService licenseService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public License createLicense(@Valid @RequestBody License license) {
         return licenseRepository.save(license);
     }
@@ -57,12 +59,14 @@ public class LicenseController {
     }
 
     @PutMapping("/active/{licenseId}/{newActive}")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<?> changeLicenseActive (@PathVariable(value="licenseId") long licenseId,
             @PathVariable(value="newActive") boolean newActive) {
         return licenseService.changeLicenseActive(licenseId, newActive);
     }
 
     @PostMapping("/price/{licenseId}/{price}")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<?> changeLicensePrice (@PathVariable(value="licenseId") long licenseId,
             @PathVariable(value="price") double price) {
         return licenseService.setLicensePrice(licenseId, price);
