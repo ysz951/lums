@@ -2,6 +2,7 @@ package com.zhou.lums.service;
 
 import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +51,9 @@ public class LicenseService {
 
     public ResponseEntity<?> purChaseLicense(UserPrincipal currentUser, long licenseId) {
         User user = userRepository.findById(currentUser.getId()).get();
+        if (user.isBlocked()) {
+            return new ResponseEntity<>(new ApiResponse(false, "User has been blocked"), HttpStatus.BAD_REQUEST);
+        }
         License license = licenseRepository.findById(licenseId)
                 .orElseThrow(() -> new ResourceNotFoundException("License", "id", licenseId));
         Sale sale = new Sale();
