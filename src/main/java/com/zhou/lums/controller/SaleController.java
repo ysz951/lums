@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,6 +64,7 @@ public class SaleController {
     }
 
     @PutMapping("/sale/active/{saleId}/{newActive}")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<?> changeSaleActive(
             @PathVariable("saleId") long saleId,
             @PathVariable("newActive") boolean newActive) {
@@ -70,6 +72,7 @@ public class SaleController {
     }
 
     @PutMapping("sale/{saleId}/expirationdate")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<?> changeSaleExpiration(
             @PathVariable("saleId") long saleId,
             @RequestParam("year") int year,
@@ -81,6 +84,7 @@ public class SaleController {
     }
 
     @PutMapping("sale/expiration")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<?> checkSaleExpiration() {
         return saleService.checkSaleExpiration();
     }
