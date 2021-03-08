@@ -65,8 +65,13 @@ public class UserService {
     public ResponseEntity<?> blockUser(UserPrincipal currentUser, long memberId) {
 //        if (userRepository.updateUserBlock(true, memberId) == 0) throw new ResourceNotFoundException("User", "id", memberId);
 //        logService.logBlockUser(admin, user, isBlocked);
+        Map<String, String> responseObj = new HashMap<>();
         User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+        if (user.getRole().equals(Role.ROLE_ADMIN) || user.getRole().equals(Role.ROLE_SUPERUSER)) {
+            responseObj.put("error", "No authorization");
+            return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
+        }
         user.setBlocked(true);
         userRepository.save(user);
         User admin = userRepository.findById(currentUser.getId()).get();
@@ -76,8 +81,13 @@ public class UserService {
 
     public ResponseEntity<?> unblockUser(UserPrincipal currentUser, long memberId) {
 //        if (userRepository.updateUserBlock(false, memberId) == 0) throw new ResourceNotFoundException("User", "id", memberId);
+        Map<String, String> responseObj = new HashMap<>();
         User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+        if (user.getRole().equals(Role.ROLE_ADMIN) || user.getRole().equals(Role.ROLE_SUPERUSER)) {
+            responseObj.put("error", "No authorization");
+            return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
+        }
         user.setBlocked(false);
         userRepository.save(user);
         User admin = userRepository.findById(currentUser.getId()).get();
