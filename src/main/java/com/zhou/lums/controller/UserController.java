@@ -129,9 +129,11 @@ public class UserController {
     }
 
     @PostMapping("/users/password")
+    @PreAuthorize("hasRole('SUPERUSER')")
     public ResponseEntity<?> changePassword(@RequestParam(value = "user_id") long userId,
-            @Valid @RequestBody PasswordRequest passwordRequest) {
-        return userService.changePassword(userId, passwordRequest);
+            @Valid @RequestBody PasswordRequest passwordRequest,
+            @CurrentUser UserPrincipal currentUser) {
+        return userService.changePassword(userId, currentUser, passwordRequest);
     }
 
     @PostMapping("/users/block/{memberId}")

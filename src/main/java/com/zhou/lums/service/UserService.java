@@ -38,12 +38,18 @@ public class UserService {
 
     public ResponseEntity<?> changePassword (
             long userId,
+            UserPrincipal currentUser,
             PasswordRequest passwordRequest) {
         String oldPassword = passwordRequest.getOldPassword(),
                 newPassword = passwordRequest.getNewPassword();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        User currentU = userRepository.findById(currentUser.getId()).get();
         Map<String, String> responseObj = new HashMap<>();
+        if (user.getRole().equals((Role.ROLE_SUPERUSER)) && user.getId() != currentU.getId()) {
+            responseObj.put("error", "No authorization");
+            return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
+        }
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             System.out.println("error");
             responseObj.put("password", "Incorrect old password");
