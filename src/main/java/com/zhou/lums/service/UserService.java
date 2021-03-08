@@ -38,12 +38,18 @@ public class UserService {
 
     public ResponseEntity<?> changePassword (
             long userId,
+            UserPrincipal currentUser,
             PasswordRequest passwordRequest) {
         String oldPassword = passwordRequest.getOldPassword(),
                 newPassword = passwordRequest.getNewPassword();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        User currentU = userRepository.findById(currentUser.getId()).get();
         Map<String, String> responseObj = new HashMap<>();
+        if (user.getRole().equals((Role.ROLE_SUPERUSER)) && user.getId() != currentU.getId()) {
+            responseObj.put("error", "No authorization");
+            return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
+        }
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             System.out.println("error");
             responseObj.put("password", "Incorrect old password");
@@ -59,8 +65,13 @@ public class UserService {
     public ResponseEntity<?> blockUser(UserPrincipal currentUser, long memberId) {
 //        if (userRepository.updateUserBlock(true, memberId) == 0) throw new ResourceNotFoundException("User", "id", memberId);
 //        logService.logBlockUser(admin, user, isBlocked);
+        Map<String, String> responseObj = new HashMap<>();
         User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+        if (user.getRole().equals(Role.ROLE_ADMIN) || user.getRole().equals(Role.ROLE_SUPERUSER)) {
+            responseObj.put("error", "No authorization");
+            return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
+        }
         user.setBlocked(true);
         userRepository.save(user);
         User admin = userRepository.findById(currentUser.getId()).get();
@@ -70,8 +81,13 @@ public class UserService {
 
     public ResponseEntity<?> unblockUser(UserPrincipal currentUser, long memberId) {
 //        if (userRepository.updateUserBlock(false, memberId) == 0) throw new ResourceNotFoundException("User", "id", memberId);
+        Map<String, String> responseObj = new HashMap<>();
         User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+        if (user.getRole().equals(Role.ROLE_ADMIN) || user.getRole().equals(Role.ROLE_SUPERUSER)) {
+            responseObj.put("error", "No authorization");
+            return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
+        }
         user.setBlocked(false);
         userRepository.save(user);
         User admin = userRepository.findById(currentUser.getId()).get();
@@ -79,9 +95,17 @@ public class UserService {
         return ResponseEntity.ok(new ApiResponse(true, "unblocked user"));
     }
 
-    public ResponseEntity<?> updateUserEmail(String newEmail, long memberId) {
+    public ResponseEntity<?> updateUserEmail(String newEmail, long memberId, UserPrincipal currentUser) {
         User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+        if (user.getRole().equals(Role.ROLE_SUPERUSER)) {
+            return new ResponseEntity<>(new ApiResponse(false, "No authorization"), HttpStatus.BAD_REQUEST);
+        }
+        User currentU = userRepository.findById(currentUser.getId()).get();
+        if (currentU.getRole().equals(Role.ROLE_ADMIN) && currentU.getId() != memberId) {
+            return new ResponseEntity<>(new ApiResponse(false, "No authorization"), HttpStatus.BAD_REQUEST);
+        }
+
         user.setEmail(newEmail);
         userRepository.save(user);
         return ResponseEntity.ok(new ApiResponse(true, "update email"));
@@ -90,7 +114,14 @@ public class UserService {
     public ResponseEntity<?> changeUserRole(UserPrincipal currentUser, long memberId, Role newRole) {
         User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+        if (user.getRole().equals(Role.ROLE_SUPERUSER) || newRole.equals(Role.ROLE_SUPERUSER)) {
+            return new ResponseEntity<>(new ApiResponse(false, "No authorization"), HttpStatus.BAD_REQUEST);
+        }
         User admin = userRepository.findById(currentUser.getId()).get();
+        if (admin.getRole().equals(Role.ROLE_ADMIN) &&  (user.getRole().equals(Role.ROLE_ADMIN) || newRole.equals(Role.ROLE_ADMIN))) {
+            System.out.println("Admin Wrong");
+            return new ResponseEntity<>(new ApiResponse(false, "No authorization"), HttpStatus.BAD_REQUEST);
+        }
         Role prevRole = user.getRole();
         user.setRole(newRole);
         userRepository.save(user);

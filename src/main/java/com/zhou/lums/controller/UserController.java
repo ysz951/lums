@@ -129,9 +129,11 @@ public class UserController {
     }
 
     @PostMapping("/users/password")
+    @PreAuthorize("hasRole('SUPERUSER')")
     public ResponseEntity<?> changePassword(@RequestParam(value = "user_id") long userId,
-            @Valid @RequestBody PasswordRequest passwordRequest) {
-        return userService.changePassword(userId, passwordRequest);
+            @Valid @RequestBody PasswordRequest passwordRequest,
+            @CurrentUser UserPrincipal currentUser) {
+        return userService.changePassword(userId, currentUser, passwordRequest);
     }
 
     @PostMapping("/users/block/{memberId}")
@@ -153,12 +155,16 @@ public class UserController {
 
     @PostMapping("/users/email/{memberId}")
     @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
-    public ResponseEntity<?> updateUserEmail(@PathVariable(value = "memberId") long memberId, @RequestParam(value = "new_email") String newEmail) {
-        return userService.updateUserEmail(newEmail, memberId);
+    public ResponseEntity<?> updateUserEmail(
+            @PathVariable(value = "memberId") long memberId,
+            @RequestParam(value = "new_email") String newEmail,
+            @CurrentUser UserPrincipal currentUser) {
+        return userService.updateUserEmail(newEmail, memberId, currentUser);
     }
 
     @PostMapping("/users/{memberId}/modify_role")
-    @PreAuthorize("hasRole('SUPERUSER')")
+//    @PreAuthorize("hasRole('SUPERUSER')")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<?> changeUserRole(
             @CurrentUser UserPrincipal currentUser,
             @PathVariable("memberId") long memberId,
