@@ -1,4 +1,5 @@
 insert INTO users(name, username, password, email, role, blocked) VALUES 
-('ysz', 'ysz', '$2a$10$ZUPqPHo8/Pvu69avdsp.gOZ13wkb2NWb9g/7Nb.LO7Gm7.PcnPqSu', 'shengyang_zhou@hotmail.com', 'ROLE_SUPERUSER', 'false'),
-('zsy', 'zsy', '$2a$10$HA86qJX24N2gUJjsD3kc/epYuHUq/ltt/iLWVQtYsJi4v4SLlyowy', 'shengyang_zhou@baylor.edu', 'ROLE_ADMIN', 'false')
+('lums', 'lums', '$2a$10$UriWw1AArWKKxR6rmtzHEOWfDiFrdc0YVKyS2EyzpakA7WCTrpbRG', 'lums@super.com', 'ROLE_SUPERUSER', 'false'),
+('admin', 'admin', '$2a$10$TIlWVPkn9Kke6Md.hUWsU.TrZtbQERAeAk7b8ndwzcADuKcOa0mD6', 'lums@admin.com', 'ROLE_ADMIN', 'false'),
+('user', 'user', '$2a$10$55iN4xP6vFlcpSGGI85giOuN2uCyIftH0pIsRVYP5oN5hAXeILtFC', 'lums@user.com', 'ROLE_USER', 'false')
 on conflict (username) do nothing;
