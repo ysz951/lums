@@ -1,7 +1,7 @@
 # LUMS
 An online license and user management system based on React and SpringBoot.
 
-This is the back end for `LUMS`. The front end can be found at.
+This is the back end for `LUMS`. The front end can be found at https://github.com/ysz951/lums_react.
 
 ## Features
 * Security login based on JWT Authentication with auto logout client side.
