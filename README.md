@@ -24,3 +24,28 @@ This is the back end for `LUMS`. The front end can be found at https://github.co
 ## Screenshoots
 ### Home page: 
 ![image](https://github.com/ysz951/lums/blob/master/demo_images/main_page.jpg)
+
+## Setting Up
+
+- Create development and test databases: `createdb lums`, `createdb lums-test`
+- Create database user: `createuser testuser`
+- Grant privileges to new user in `psql`:
+  - `GRANT ALL PRIVILEGES ON DATABASE "lums" TO testuser`
+  - `GRANT ALL PRIVILEGES ON DATABASE "lums-test" TO testuser`
+- Create `applictaion.yml` under `/src/main/resources` folder
+  - `applictaion.yml` should include: 
+    ```yml
+      jwtSecret:
+        YourSecret
+    ```
+## Scripts
+
+- Install dependencies: `mvn clean install`
+- Run tests: `mvn clean test`
+- Start application: `mvn spring-boot:run`
+- Package application: `mvn package`
+
+## API Endpotins
+### POST `/api/auth/signin`
+### POST `/api/auth/signup`
+
