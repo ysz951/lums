@@ -45,7 +45,3 @@ This is the back end for `LUMS`. The front end can be found at https://github.co
 - Start application: `mvn spring-boot:run`
 - Package application: `mvn package`
 
-## API Endpotins
-### POST `/api/auth/signin`
-### POST `/api/auth/signup`
-
