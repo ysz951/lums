@@ -4,6 +4,7 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -29,12 +30,18 @@ public class WebTests {
 
     private static String token;
 
+    @Value("${test_user}")
+    private String testUser;
+
+    @Value("${test_user_password}")
+    private String testUserPassword;
+
     @BeforeEach
     public void loginTest() {
         LoginRequest login = new LoginRequest();
         HttpEntity<LoginRequest> request = new HttpEntity<>(login);
-        login.setUsernameOrEmail("lums@admin.com");
-        login.setPassword("admin123");
+        login.setUsernameOrEmail(testUser);
+        login.setPassword(testUserPassword);
         Map<String, ?> response = restTemplate.postForObject("http://localhost:" + port + "/api/auth/signin",
                 request, Map.class);
         token = (String) response.get("accessToken");
