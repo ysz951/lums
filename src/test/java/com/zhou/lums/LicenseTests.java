@@ -1,5 +1,6 @@
 package com.zhou.lums;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -47,7 +49,6 @@ public class LicenseTests {
         Map<String, ?> response = restTemplate.postForObject("http://localhost:" + port + "/api/auth/signin",
                 request, Map.class);
         token = (String) response.get("accessToken");
-        System.out.println(response.get("accessToken"));
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + token);
@@ -61,22 +62,39 @@ public class LicenseTests {
         restTemplate.exchange("http://localhost:" + port + "/api/license", HttpMethod.POST, licenseRequest, String.class);
     }
 
+//    @Test
+//    public void getLicense() throws Exception {
+//        System.out.println("license");
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        headers.add("Authorization", "Bearer " + token);
+//        HttpEntity<?> request = new HttpEntity<>(headers);
+//        ResponseEntity<Map[]> response =restTemplate.exchange("http://localhost:" + port + "/api/license", HttpMethod.GET, request, Map[].class);
+//        System.out.println(response.getBody());
+//        Map<String, ?>[] licenses = response.getBody();
+//        for (Map<String, ?> license : licenses) {
+//            for (String key : license.keySet()) {
+//                System.out.println(key + " : " + license.get(key));
+//            }
+//        }
+//
+//    }
+
     @Test
-    public void getLicense() throws Exception {
-        System.out.println("license");
+    public void postLicense() throws Exception {
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + token);
-        HttpEntity<?> request = new HttpEntity<>(headers);
-        ResponseEntity<Map[]> response =restTemplate.exchange("http://localhost:" + port + "/api/license", HttpMethod.GET, request, Map[].class);
-        System.out.println(response.getBody());
-        Map<String, ?>[] licenses = response.getBody();
-        for (Map<String, ?> license : licenses) {
-            for (String key : license.keySet()) {
-                System.out.println(key + " : " + license.get(key));
-            }
-        }
+        License license = new License();
+        license.setActive(true);
+        license.setDuration(Duration.MONTHLY);
+        license.setPrice(-10);
+        license.setYear(2013);
+        HttpEntity<License> licenseRequest = new HttpEntity<>(license, headers);
+        ResponseEntity<?> response = restTemplate.exchange("http://localhost:" + port + "/api/license", HttpMethod.POST, licenseRequest, String.class);
 
+        assertTrue(response.getStatusCode().equals(HttpStatus.BAD_REQUEST));
     }
 
 

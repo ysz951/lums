@@ -45,7 +45,6 @@ public class WebTests {
         Map<String, ?> response = restTemplate.postForObject("http://localhost:" + port + "/api/auth/signin",
                 request, Map.class);
         token = (String) response.get("accessToken");
-        System.out.println(response.get("accessToken"));
     }
 
 //    @Test
@@ -66,7 +65,6 @@ public class WebTests {
 
     @Test
     public void getLicense() throws Exception {
-        System.out.println("license");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + token);
