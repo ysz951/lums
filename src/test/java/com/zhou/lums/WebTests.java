@@ -1,7 +1,6 @@
 package com.zhou.lums;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +43,7 @@ public class WebTests {
         HttpEntity<LoginRequest> request = new HttpEntity<>(login);
         login.setUsernameOrEmail(testAdmin);
         login.setPassword(testAdminPassword);
-        Map<String, ?> response = restTemplate.postForObject("http://localhost:" + port + "/api/auth/signin",
+        Map<String, Object> response = restTemplate.postForObject("http://localhost:" + port + "/api/auth/signin",
                 request, Map.class);
         token = (String) response.get("accessToken");
     }
@@ -52,16 +51,9 @@ public class WebTests {
     @Test
     public void getUsers() throws Exception {
         System.out.println("token is " + token);
-        List<Map<String, ?>> response = restTemplate.getForObject("http://localhost:" + port + "/api/users",
-                List.class);
-        int i = 1;
-        for (Map<String, ?> user : response) {
-            System.out.println((int) user.get("id") == i);
-            System.out.println(user.get("email"));
-            System.out.println(user.get("blocked"));
-            i++;
-        }
-        System.out.println(response.size());
+        ResponseEntity<?> response = restTemplate.getForEntity("http://localhost:" + port + "/api/users",
+                String.class);
+        System.out.println(response.getBody());
 
     }
 
@@ -73,7 +65,7 @@ public class WebTests {
         HttpEntity<?> request = new HttpEntity<>(headers);
         ResponseEntity<Map> response =restTemplate.exchange("http://localhost:" + port + "/api/user/me", HttpMethod.GET, request, Map.class);
         System.out.println(response.getBody());
-        Map<String, ?> ob = response.getBody();
+        Map<String, Object> ob = response.getBody();
         for (String key : ob.keySet()) {
             System.out.println(key + " : " + ob.get(key));
         }
