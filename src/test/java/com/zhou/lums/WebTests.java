@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import com.zhou.lums.payload.LoginRequest;
+import com.zhou.lums.payload.UserSummary;
 
 
 @ActiveProfiles("test")
@@ -51,9 +52,13 @@ public class WebTests {
     @Test
     public void getUsers() throws Exception {
         System.out.println("token is " + token);
-        ResponseEntity<?> response = restTemplate.getForEntity("http://localhost:" + port + "/api/users",
-                String.class);
-        System.out.println(response.getBody());
+        ResponseEntity<UserSummary[]> response = restTemplate.getForEntity("http://localhost:" + port + "/api/users",
+                UserSummary[].class);
+        for (UserSummary user : response.getBody()) {
+            System.out.println(user.getId());
+            System.out.println(user.getRole());
+            System.out.println(user.getName());
+        }
 
     }
 
@@ -63,16 +68,13 @@ public class WebTests {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + token);
         HttpEntity<?> request = new HttpEntity<>(headers);
-        ResponseEntity<Map> response =restTemplate.exchange("http://localhost:" + port + "/api/user/me", HttpMethod.GET, request, Map.class);
+        ResponseEntity<UserSummary> response =restTemplate.exchange("http://localhost:" + port + "/api/user/me", HttpMethod.GET, request, UserSummary.class);
         System.out.println(response.getBody());
-        Map<String, Object> ob = response.getBody();
-        for (String key : ob.keySet()) {
-            System.out.println(key + " : " + ob.get(key));
-        }
+
     }
 
     @Test
-    public void getLicense() throws Exception {
+    public void changeRoleFail() throws Exception {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + token);
@@ -81,10 +83,7 @@ public class WebTests {
                 .exchange("http://localhost:" + port + "/api/users/1/modify_role?newRole=ROLE_USER",
                         HttpMethod.POST, request, String.class);
         assertTrue(response.getStatusCode().equals(HttpStatus.BAD_REQUEST));
-//        Map<String, ?> ob = response.getBody();
-//        for (String key : ob.keySet()) {
-//            System.out.println(key + " : " + ob.get(key));
-//        }
+
     }
 
 
