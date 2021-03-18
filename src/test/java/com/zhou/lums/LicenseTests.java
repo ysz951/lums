@@ -52,13 +52,6 @@ public class LicenseTests {
         Map<String, ?> response = restTemplate.postForObject("http://localhost:" + port + "/api/auth/signin",
                 request, Map.class);
         token = (String) response.get("accessToken");
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", "Bearer " + token);
-
-        //        HttpEntity<License> licenseRequest = new HttpEntity<>(license, headers);
-        //
-        //        restTemplate.exchange("http://localhost:" + port + "/api/license", HttpMethod.POST, licenseRequest, String.class);
     }
     @Test
     public void getLicense() throws Exception {
@@ -72,19 +65,19 @@ public class LicenseTests {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + token);
         HttpEntity<?> request = new HttpEntity<>(headers);
-        ResponseEntity<Map[]> response =restTemplate.exchange("http://localhost:" + port + "/api/license", HttpMethod.GET, request, Map[].class);
+        ResponseEntity<License[]> response =restTemplate.exchange("http://localhost:" + port + "/api/license", HttpMethod.GET, request, License[].class);
         System.out.println(response.getBody());
-        Map<String, ?>[] licenses = response.getBody();
-        for (Map<String, ?> license : licenses) {
-            for (String key : license.keySet()) {
-                System.out.println(key + " : " + license.get(key));
-            }
+        License[] licenses = response.getBody();
+        for (License license : licenses) {
+            System.out.println(license.getId());
+            System.out.println(license.getPrice());
+            System.out.println(license.getDuration());
         }
 
     }
 
     @Test
-    public void postLicense() throws Exception {
+    public void postLicenseFail() throws Exception {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -114,7 +107,7 @@ public class LicenseTests {
         HttpEntity<License> licenseRequest = new HttpEntity<>(license, headers);
         ResponseEntity<?> response = restTemplate.exchange("http://localhost:" + port + "/api/license", HttpMethod.POST, licenseRequest, String.class);
         System.out.println(response.getStatusCode());
-        //        System.out.println(HttpStatus.OK);
+
         assertTrue(response.getStatusCode().equals(HttpStatus.OK));
     }
 
