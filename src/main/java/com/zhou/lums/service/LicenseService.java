@@ -33,10 +33,6 @@ public class LicenseService {
     private LogService logService;
 
     public ResponseEntity<?> changeLicenseActive(long licenseId, boolean newActive) {
-//        License license = licenseRepository.findById(licenseId)
-//                .orElseThrow(() -> new ResourceNotFoundException("License", "id", licenseId));
-//        license.setActive(newActive);
-//        licenseRepository.save(license);
         if (licenseRepository.updateLicenseActive(newActive, licenseId) == 0) throw new ResourceNotFoundException("License", "id", licenseId);
         return ResponseEntity.ok(new ApiResponse(true, "Change License Active"));
     }
@@ -60,9 +56,7 @@ public class LicenseService {
         sale.setActive(true);
         sale.setPurchasedDate(LocalDate.now());
         sale.setUser(user);
-//        user.getSales().add(sale);
         sale.setLicense(license);
-//        license.getSales().add(sale);
         saleRepository.save(sale);
         logService.logPurchase(user, license);
         return ResponseEntity.ok(new ApiResponse(true, "Purchase License"));

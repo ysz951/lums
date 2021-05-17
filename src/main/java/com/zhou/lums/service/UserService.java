@@ -5,7 +5,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,6 @@ import com.zhou.lums.model.User.Role;
 import com.zhou.lums.payload.ApiResponse;
 import com.zhou.lums.payload.PasswordRequest;
 import com.zhou.lums.respository.UserRepository;
-import com.zhou.lums.security.JwtTokenProvider;
 import com.zhou.lums.security.UserPrincipal;
 
 @Service
@@ -28,13 +26,7 @@ public class UserService {
     private LogService logService;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtTokenProvider tokenProvider;
 
     public ResponseEntity<?> changePassword (
             long userId,
@@ -63,8 +55,6 @@ public class UserService {
     }
 
     public ResponseEntity<?> blockUser(UserPrincipal currentUser, long memberId) {
-//        if (userRepository.updateUserBlock(true, memberId) == 0) throw new ResourceNotFoundException("User", "id", memberId);
-//        logService.logBlockUser(admin, user, isBlocked);
         Map<String, String> responseObj = new HashMap<>();
         User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
@@ -80,7 +70,6 @@ public class UserService {
     }
 
     public ResponseEntity<?> unblockUser(UserPrincipal currentUser, long memberId) {
-//        if (userRepository.updateUserBlock(false, memberId) == 0) throw new ResourceNotFoundException("User", "id", memberId);
         Map<String, String> responseObj = new HashMap<>();
         User user = userRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));

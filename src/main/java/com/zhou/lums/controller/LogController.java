@@ -17,7 +17,6 @@ public class LogController {
 
     @GetMapping
     public List<Log> listAlllogs() {
-//        return logRepository.findAllOrderedById();
         return logRepository.findAllOrderedByTimeDesc();
     }
 
