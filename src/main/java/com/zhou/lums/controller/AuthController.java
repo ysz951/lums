@@ -73,18 +73,6 @@ public class AuthController {
         user.setBlocked(false);
         System.out.println(user.getRole());
         User result = userRepository.save(user);
-//        Map<String, String> responseObj = new HashMap<>();
-//        try {
-//            User result = userRepository.save(user);
-//            URI location = ServletUriComponentsBuilder
-//                    .fromCurrentContextPath().path("/users/{username}")
-//                    .buildAndExpand(result.getUsername()).toUri();
-//            return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
-//
-//        } catch(DataIntegrityViolationException ex) {
-//            responseObj.put("error", ex.getRootCause().getMessage());
-//            return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
-//        }
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{username}")
                 .buildAndExpand(result.getUsername()).toUri();

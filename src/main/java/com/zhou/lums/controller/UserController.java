@@ -163,13 +163,11 @@ public class UserController {
     }
 
     @PostMapping("/users/{memberId}/modify_role")
-//    @PreAuthorize("hasRole('SUPERUSER')")
     @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<?> changeUserRole(
             @CurrentUser UserPrincipal currentUser,
             @PathVariable("memberId") long memberId,
             @RequestParam("newRole") Role newRole) {
-//        System.out.println(currentUser.getRole().name());
         return userService.changeUserRole(currentUser, memberId, newRole);
     }
 

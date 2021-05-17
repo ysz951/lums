@@ -35,7 +35,6 @@ public class SaleController {
     @GetMapping("/sale")
     public List<Sale> getAllSale() {
         return saleRepository.findAllOrderedById();
-//        return saleRepository.findAllOrderedByPurchasedDate();
     }
 
     @GetMapping("/sale/user")
@@ -59,8 +58,6 @@ public class SaleController {
                 .buildAndExpand(result.getId()).toUri();
         System.out.println(location.toString());
         return ResponseEntity.created(location).body(new ApiResponse(true, "Sale created successfully"));
-        // return ResponseEntity.created(location).build();
-        // return sale;
     }
 
     @PutMapping("/sale/active/{saleId}/{newActive}")
