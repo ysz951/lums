@@ -19,21 +19,11 @@ public class SaleService {
     private SaleRepository saleRepository;
 
     public ResponseEntity<?> changeSaleActive(long saleId, boolean newActive) {
-        //        Sale sale = saleRepository
-        //                .findById(saleId)
-        //                .orElseThrow(() -> new ResourceNotFoundException("Sale", "id", saleId));
-        //        sale.setActive(newActive);
-        //        saleRepository.save(sale);
         if (saleRepository.updateSaleActive(newActive, saleId) == 0) throw new ResourceNotFoundException("Sale", "id", saleId);
         return ResponseEntity.ok(new ApiResponse(true, "Change sale active"));
     }
 
     public ResponseEntity<?> changeSaleExpiration(long saleId, LocalDate expireDate) {
-        //        Sale sale = saleRepository
-        //                .findById(saleId)
-        //                .orElseThrow(() -> new ResourceNotFoundException("Sale", "id", saleId));
-        //        sale.setExpireDate(expireDate);
-        //        saleRepository.save(sale);
         if (saleRepository.updateSaleExpire(expireDate, saleId) == 0) throw new ResourceNotFoundException("Sale", "id", saleId);
         return ResponseEntity.ok(new ApiResponse(true, "Change sale exipration"));
     }
