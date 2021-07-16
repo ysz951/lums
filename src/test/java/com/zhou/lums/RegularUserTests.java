@@ -1,6 +1,7 @@
 package com.zhou.lums;
 
 import com.zhou.lums.payload.LoginRequest;
+import com.zhou.lums.payload.PasswordRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.security.core.parameters.P;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
@@ -61,6 +63,20 @@ public class RegularUserTests {
         HttpEntity<?> request = new HttpEntity<>(headers);
         ResponseEntity<String> responseEntity = restTemplate
                 .exchange("http://localhost:" + port + "/api/users/email/1?new_email=change@lums.com", HttpMethod.POST, request, String.class);
+        assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void changePasswordFail() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        PasswordRequest passwordRequest = new PasswordRequest();
+        passwordRequest.setOldPassword("old");
+        passwordRequest.setNewPassword("new");
+        headers.add("Authorization", "Bearer " + token);
+        HttpEntity<PasswordRequest> request = new HttpEntity<>(passwordRequest, headers);
+        ResponseEntity<String> responseEntity = restTemplate
+                .exchange("http://localhost:" + port + "api/users/password?user_id=1", HttpMethod.POST, request, String.class);
         assertEquals(HttpStatus.FORBIDDEN, responseEntity.getStatusCode());
     }
 
