@@ -1,7 +1,7 @@
 package com.zhou.lums;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.util.Map;
+import com.zhou.lums.payload.LoginRequest;
+import com.zhou.lums.payload.UserSummary;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
-import com.zhou.lums.payload.LoginRequest;
-import com.zhou.lums.payload.UserSummary;
+
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @ActiveProfiles("test")
@@ -50,7 +47,7 @@ public class WebTests {
     }
 
     @Test
-    public void getUsers() throws Exception {
+    public void getUsers() {
         System.out.println("token is " + token);
         ResponseEntity<UserSummary[]> response = restTemplate.getForEntity("http://localhost:" + port + "/api/users",
                 UserSummary[].class);
@@ -63,23 +60,23 @@ public class WebTests {
     }
 
     @Test
-    public void getMe() throws Exception {
+    public void getMe() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + token);
         HttpEntity<?> request = new HttpEntity<>(headers);
-        ResponseEntity<UserSummary> response =restTemplate.exchange("http://localhost:" + port + "/api/user/me", HttpMethod.GET, request, UserSummary.class);
+        ResponseEntity<UserSummary> response = restTemplate.exchange("http://localhost:" + port + "/api/user/me", HttpMethod.GET, request, UserSummary.class);
         System.out.println(response.getBody());
 
     }
 
     @Test
-    public void changeRoleFail() throws Exception {
+    public void changeRoleFail() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + token);
         HttpEntity<?> request = new HttpEntity<>(headers);
-        ResponseEntity<?> response =restTemplate
+        ResponseEntity<?> response = restTemplate
                 .exchange("http://localhost:" + port + "/api/users/1/modify_role?newRole=ROLE_USER",
                         HttpMethod.POST, request, String.class);
         assertTrue(response.getStatusCode().equals(HttpStatus.BAD_REQUEST));
