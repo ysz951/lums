@@ -1,12 +1,5 @@
 package com.zhou.lums;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import com.zhou.lums.model.License;
 import com.zhou.lums.model.License.Duration;
 import com.zhou.lums.model.Log;
@@ -14,6 +7,12 @@ import com.zhou.lums.model.User;
 import com.zhou.lums.respository.LicenseRepository;
 import com.zhou.lums.respository.LogRepository;
 import com.zhou.lums.respository.UserRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -58,7 +57,7 @@ class LumsApplicationTests {
         try {
             userRepository.save(user);
             fail("should not fail");
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             assertTrue(true);
         }
 
@@ -75,7 +74,7 @@ class LumsApplicationTests {
         try {
             userRepository.save(user);
             fail("should not fail");
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             assertTrue(true);
         }
 
@@ -92,7 +91,7 @@ class LumsApplicationTests {
         try {
             userRepository.save(user);
             fail("should not fail");
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             assertTrue(true);
         }
     }
@@ -124,7 +123,7 @@ class LumsApplicationTests {
         try {
             licenseRepository.save(license);
             fail("should not fail");
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             assertTrue(true);
         }
     }

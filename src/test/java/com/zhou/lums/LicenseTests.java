@@ -1,7 +1,9 @@
 package com.zhou.lums;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.util.Map;
+import com.zhou.lums.model.License;
+import com.zhou.lums.model.License.Duration;
+import com.zhou.lums.payload.LoginRequest;
+import com.zhou.lums.respository.LicenseRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,17 +12,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
-import com.zhou.lums.model.License;
-import com.zhou.lums.model.License.Duration;
-import com.zhou.lums.payload.LoginRequest;
-import com.zhou.lums.respository.LicenseRepository;
+
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @ActiveProfiles("test")
@@ -53,6 +50,7 @@ public class LicenseTests {
                 request, Map.class);
         token = (String) response.get("accessToken");
     }
+
     @Test
     public void getLicense() throws Exception {
         License l = new License();
@@ -65,7 +63,7 @@ public class LicenseTests {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer " + token);
         HttpEntity<?> request = new HttpEntity<>(headers);
-        ResponseEntity<License[]> response =restTemplate.exchange("http://localhost:" + port + "/api/license", HttpMethod.GET, request, License[].class);
+        ResponseEntity<License[]> response = restTemplate.exchange("http://localhost:" + port + "/api/license", HttpMethod.GET, request, License[].class);
         System.out.println(response.getBody());
         License[] licenses = response.getBody();
         for (License license : licenses) {
