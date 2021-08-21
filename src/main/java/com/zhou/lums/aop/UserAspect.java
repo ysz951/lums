@@ -16,7 +16,8 @@ public class UserAspect {
     @Autowired
     UserRepository userRepository;
 
-    @After("com.zhou.lums.aop.PointCutExpressions.forBlockUser()")
+    //    @After("com.zhou.lums.aop.PointCutExpressions.forBlockUser()")
+    @After("@annotation(SaveUserHandled)")
     public void print(JoinPoint thisJoinPoint) {
         System.out.println("==========");
         System.out.println("AOP TEST");
