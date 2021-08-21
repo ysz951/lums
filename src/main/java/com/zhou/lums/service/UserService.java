@@ -28,6 +28,17 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public User findUserById(long memberId) {
+        User user = userRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+        return user;
+    }
+
+    public User findCurrentUser(UserPrincipal currentUser) {
+        User user = userRepository.findById(currentUser.getId()).get();
+        return user;
+    }
+
     public ResponseEntity<?> changePassword (
             long userId,
             UserPrincipal currentUser,
@@ -54,32 +65,39 @@ public class UserService {
 
     }
 
-    public ResponseEntity<?> blockUser(UserPrincipal currentUser, long memberId) {
+
+    public ResponseEntity<?> blockUser(User user, User admin) {
+//    public ResponseEntity<?> blockUser(UserPrincipal currentUser, long memberId) {
         Map<String, String> responseObj = new HashMap<>();
-        User user = userRepository.findById(memberId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+//        User user = userRepository.findById(memberId)
+//                .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
         if (user.getRole().equals(Role.ROLE_ADMIN) || user.getRole().equals(Role.ROLE_SUPERUSER)) {
             responseObj.put("error", "No authorization");
             return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
         }
         user.setBlocked(true);
-        userRepository.save(user);
-        User admin = userRepository.findById(currentUser.getId()).get();
+
+//        User admin = userRepository.findById(currentUser.getId()).get();
         logService.logBlockUser(admin, user, true);
         return ResponseEntity.ok(new ApiResponse(true, "blocked user"));
     }
 
-    public ResponseEntity<?> unblockUser(UserPrincipal currentUser, long memberId) {
+    public void saveUser(User user) {
+        System.out.println("test");
+    }
+
+    public ResponseEntity<?> unblockUser(User user, User admin) {
         Map<String, String> responseObj = new HashMap<>();
-        User user = userRepository.findById(memberId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
+//        User user = userRepository.findById(memberId)
+//                .orElseThrow(() -> new ResourceNotFoundException("User", "id", memberId));
         if (user.getRole().equals(Role.ROLE_ADMIN) || user.getRole().equals(Role.ROLE_SUPERUSER)) {
             responseObj.put("error", "No authorization");
             return new ResponseEntity<>(responseObj, HttpStatus.BAD_REQUEST);
         }
         user.setBlocked(false);
-        userRepository.save(user);
-        User admin = userRepository.findById(currentUser.getId()).get();
+//        userRepository.save(user);
+//        saveUser();
+//        User admin = userRepository.findById(currentUser.getId()).get();
         logService.logBlockUser(admin, user, false);
         return ResponseEntity.ok(new ApiResponse(true, "unblocked user"));
     }

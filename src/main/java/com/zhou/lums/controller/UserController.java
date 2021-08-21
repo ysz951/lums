@@ -1,24 +1,6 @@
 package com.zhou.lums.controller;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import com.zhou.lums.exception.ResourceNotFoundException;
 import com.zhou.lums.model.User;
 import com.zhou.lums.model.User.Role;
@@ -31,20 +13,30 @@ import com.zhou.lums.security.CurrentUser;
 import com.zhou.lums.security.JwtTokenProvider;
 import com.zhou.lums.security.UserPrincipal;
 import com.zhou.lums.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @RestController
 @RequestMapping("/api")
 public class UserController {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private UserRepository userRepository;
-
     private UserService userService;
-
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private JwtTokenProvider tokenProvider;
 
@@ -53,8 +45,6 @@ public class UserController {
         this.userRepository = userRepository;
         this.userService = userService;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/user/{userId}")
     // @PreAuthorize("hasRole('USER')")
@@ -104,7 +94,7 @@ public class UserController {
     }
 
     @GetMapping("/users/role/{role}")
-    public List<UserSummary> getUserByRole(@PathVariable(value="role") Role role) {
+    public List<UserSummary> getUserByRole(@PathVariable(value = "role") Role role) {
         return userRepository.findAllByRole(role)
                 .stream()
                 .map(user -> new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole(), user.getEmail()))
@@ -114,7 +104,7 @@ public class UserController {
 
     @GetMapping("/users")
     public List<UserSummary> getUsers() {
-        List<UserSummary> userList= userRepository.findAllOrderedById()
+        List<UserSummary> userList = userRepository.findAllOrderedById()
                 .stream()
                 .map(user -> new UserSummary(user.getId(), user.getUsername(), user.getName(), user.isBlocked(), user.getRole(), user.getEmail()))
                 .collect(Collectors.toList());
@@ -131,8 +121,8 @@ public class UserController {
     @PostMapping("/users/password")
     @PreAuthorize("hasRole('SUPERUSER')")
     public ResponseEntity<?> changePassword(@RequestParam(value = "user_id") long userId,
-            @Valid @RequestBody PasswordRequest passwordRequest,
-            @CurrentUser UserPrincipal currentUser) {
+                                            @Valid @RequestBody PasswordRequest passwordRequest,
+                                            @CurrentUser UserPrincipal currentUser) {
         return userService.changePassword(userId, currentUser, passwordRequest);
     }
 
@@ -142,7 +132,9 @@ public class UserController {
     public ResponseEntity<?> blockUser(
             @CurrentUser UserPrincipal currentUser,
             @PathVariable(value = "memberId") long memberId) {
-        return userService.blockUser(currentUser, memberId);
+        User user = userService.findUserById(memberId);
+        User admin = userService.findCurrentUser(currentUser);
+        return userService.blockUser(user, admin);
     }
 
     @PostMapping("/users/unblock/{memberId}")
@@ -150,7 +142,9 @@ public class UserController {
     public ResponseEntity<?> unblockUser(
             @CurrentUser UserPrincipal currentUser,
             @PathVariable(value = "memberId") long memberId) {
-        return userService.unblockUser(currentUser, memberId);
+        User user = userService.findUserById(memberId);
+        User admin = userService.findCurrentUser(currentUser);
+        return userService.unblockUser(user, admin);
     }
 
     @PostMapping("/users/email/{memberId}")
