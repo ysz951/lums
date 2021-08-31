@@ -32,11 +32,12 @@ class LumsApplicationTests {
     }
 
     @Test
-    public void testCreateProduct() throws Exception {
+    public void testCreateUser() throws Exception {
         User user = new User();
         user.setName("first");
         user.setUsername("username1");
         user.setEmail("test1@lums.com");
+        user.setRole(User.Role.ROLE_USER);
         user.setPassword("password1");
         user.setBlocked(false);
         userRepository.save(user);
